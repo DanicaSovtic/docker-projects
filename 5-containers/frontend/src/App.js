@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import GoalInput from './components/goals/GoalInput';
-import CourseGoals from './components/goals/CourseGoals';
+import TodoInput from './components/goals/TodoInput.js';
+import TodoList from './components/goals/TodoList.js'; 
 import ErrorAlert from './components/UI/ErrorAlert';
 
 function App() {
@@ -104,9 +104,9 @@ function App() {
   return (
     <div>
       {error && <ErrorAlert errorText={error} />}
-      <GoalInput onAddGoal={addGoalHandler} />
+      <TodoInput onAddTodo={addGoalHandler} />
       {!isLoading && (
-        <CourseGoals goals={loadedGoals} onDeleteGoal={deleteGoalHandler} />
+        <TodoList todos={loadedGoals} onDeleteTodo={deleteGoalHandler} />
       )}
     </div>
   );

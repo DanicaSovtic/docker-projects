@@ -1,9 +1,9 @@
 import React from 'react';
 
-import './GoalItem.css';
+import './TodoItem.css';
 
-function GoalItem(props) {
+function TodoItem(props) {
   return <li className="goal-item" onClick={props.onDelete.bind(null, props.id)}>{props.text}</li>;
 }
 
-export default GoalItem;
+export default TodoItem;
