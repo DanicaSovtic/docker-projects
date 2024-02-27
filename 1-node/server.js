@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-let userWishlist = "Set your wishes!";
+let userWishlist = "Napiši svoju listu želja!";
 
 app.use(
   bodyParser.urlencoded({
@@ -21,15 +21,15 @@ app.get("/", (req, res) => {
       </head>
       <body>
         <section>
-          <h2>My Wishlist Today!</h2>
+          <h2>Moja lista želja!</h2>
           <h3>${userWishlist}</h3>
         </section>
         <form action="/store-wishlist" method="POST">
           <div class="form-control">
-            <label>Wishlist Item</label>
+            <label>Element liste:</label>
             <input type="text" name="wishlistItem">
           </div>
-          <button>Add to Wishlist</button>
+          <button>Dodaj u listu</button>
         </form>
       </body>
     </html>

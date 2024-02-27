@@ -34,6 +34,10 @@ app.post("/create", async (req, res) => {
   await fs.writeFile(tempFilePath, content);
   exists(finalFilePath, async (exists) => {
     if (exists) {
+      res.redirect("/exists");
+    } else {
+      await fs.copyFile(tempFilePath, finalFilePath);
+      await fs.unlink(tempFilePath);
       const fileLink = `/message/${adjTitle}.txt`;
       res.send(`
         <p>Email uspešno sačuvan! Pogledajte ga <a href="${fileLink}">ovde</a>.</p>
@@ -41,9 +45,6 @@ app.post("/create", async (req, res) => {
           <button>Povratak</button>
         </form>
       `);
-    } else {
-      await fs.copyFile(tempFilePath, finalFilePath);
-      await fs.unlink(tempFilePath);
       // res.redirect("/");
     }
   });

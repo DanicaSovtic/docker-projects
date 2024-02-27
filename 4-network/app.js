@@ -4,26 +4,32 @@ const axios = require('axios').default;
 const mongoose = require('mongoose');
 
 const Favorite = require('./models/favorite');
+const Character = require('./models/character');
+const { application } = require('express');
 
 const app = express();
 
 app.use(bodyParser.json());
 
 app.get('/favorites', async (req, res) => {
-  const favorites = await Favorite.find();
-  res.status(200).json({
-    favorites: favorites,
-  });
+  try {
+    const favorites = await Favorite.find();
+    res.status(200).json({
+      favorites: favorites,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong.' });
+  }
 });
 
 app.post('/favorites', async (req, res) => {
-  const favName = req.body.name;
   const favType = req.body.type;
+  const favName = req.body.name;
   const favUrl = req.body.url;
 
   try {
-    if (favType !== 'movie' && favType !== 'character') {
-      throw new Error('"type" should be "movie" or "character"!');
+    if (favType !== 'episode' && favType !== 'character') {
+      throw new Error('"type" should be "episode" or "character"!');
     }
     const existingFav = await Favorite.findOne({ name: favName });
     if (existingFav) {
@@ -49,27 +55,72 @@ app.post('/favorites', async (req, res) => {
   }
 });
 
-app.get('/movies', async (req, res) => {
+
+app.post('/characters', async (req, res) => {
+  const charName = req.body.name;
+  const charStatus = req.body.status;
+  const charSpecies = req.body.species;
+  const charGender = req.body.gender;
+  const charOrigin = req.body.origin;
+  const charLocation = req.body.location;
+  const charImage = req.body.image;
+  const charCreated = req.body.created;
+  const charUrl = req.body.url;
+
   try {
-    const response = await axios.get('https://swapi.dev/api/films');
-    res.status(200).json({ movies: response.data });
+    // Provera postojanja lika
+    const existingChar = await Character.findOne({ name: charName });
+    if (existingChar) {
+      throw new Error('Character exists already!');
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+
+  // Kreiranje novog lika
+  const character = new Character({
+    name: charName,
+    status: charStatus,
+    species: charSpecies,
+    gender: charGender,
+    origin: charOrigin,
+    location: charLocation,
+    image: charImage,
+    created: charCreated,
+    url: charUrl,
+  });
+
+  try {
+    // Čuvanje lika u bazi podataka
+    await character.save();
+    res
+      .status(201)
+      .json({ message: 'Character saved!', character: character.toObject() });
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong.' });
   }
 });
 
-app.get('/people', async (req, res) => {
+app.get('/characters', async (req, res) => {
   try {
-    const response = await axios.get('https://swapi.dev/api/people');
-    res.status(200).json({ people: response.data });
+    const response = await axios.get('https://rickandmortyapi.com/api/character');
+    res.status(200).json({ characters: response.data });
   } catch (error) {
     res.status(500).json({ message: 'Something went wrong.' });
   }
 });
 
+app.get('/episodes', async (req, res) => {
+  try {
+    const response = await axios.get('https://rickandmortyapi.com/api/episode');
+    res.status(200).json({ episodes: response.data });
+  } catch (error) {
+    res.status(500).json({ message: 'Something went wrong.' });
+  }
+});
 
 mongoose.connect(
-  'mongodb://127.0.0.1:27017/swfavorites',
+  'mongodb://172.17.0.2:27017/swfavorites',
   { useNewUrlParser: true },
   (err) => {
     if (err) {
@@ -79,3 +130,6 @@ mongoose.connect(
     }
   }
 );
+
+
+
