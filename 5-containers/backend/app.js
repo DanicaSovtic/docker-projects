@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -14,7 +14,7 @@ const accessLogStream = fs.createWriteStream(
   path.join(__dirname, 'logs', 'access.log'),
   { flags: 'a' }
 );
-
+app.use(cors());
 app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(bodyParser.json());
@@ -25,6 +25,11 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
+
+// app.get('/', async (req, res) => {
+//   console.log('osnovna stranica');
+  
+// });
 
 app.get('/goals', async (req, res) => {
   console.log('TRYING TO FETCH GOALS');
@@ -84,7 +89,7 @@ app.delete('/goals/:id', async (req, res) => {
 });
 
 mongoose.connect(
-  `mongodb://host.docker.internal:27017/course-goals`,
+  `mongodb://mongodb:27017/course-goals`,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

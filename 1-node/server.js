@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
       </head>
       <body>
         <section>
-          <h2>Moja lista želja!</h2>
+          <h2>Moja lista želja!!</h2>
           <h3>${userWishlist}</h3>
         </section>
         <form action="/store-wishlist" method="POST">
